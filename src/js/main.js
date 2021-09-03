@@ -2,9 +2,15 @@ import "./slider";
 import modals from "./modules/modals";
 import tabs from './modules/tabs'
 import forms from './modules/forms'
+import changeModalState from './modules/changeModalState'
 
 window.addEventListener('DOMContentLoaded', ()=> {
     'use strict';
+
+    let modalState = {}; // Делаем свой стейт, чтобы хранить, то что выбрал пользак удобная штука (общий)
+
+
+
     const intervalId =  setInterval(() => {
         document.querySelector('.popup').style.display = "block";
         document.body.classList.add('modal-open');
@@ -12,13 +18,14 @@ window.addEventListener('DOMContentLoaded', ()=> {
         if(document.body.classList.contains('modal-open')) {
             clearInterval(intervalId)
         }
-    }, 60000);
+    }, 600000);
 
     
-
-    modals(intervalId);
-
+    changeModalState(modalState);
+    modals(intervalId, modalState);
     tabs('.glazing_slider','.glazing_block', '.glazing_content','active');
     tabs('.decoration_slider','.no_click', '.decoration_content > div > div','after_click');
-    forms();
+    tabs('.balcon_icons', '.balcon_icons_img', '.big_img > img', 'do_image_more', 'inline-block');
+    forms(modalState); // Чтобы внутри модуля forms был стейт наш
+
 });
