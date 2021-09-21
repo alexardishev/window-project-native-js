@@ -17807,6 +17807,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+
 
 
 
@@ -17815,8 +17817,14 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
-  var modalState = {}; // Делаем свой стейт, чтобы хранить, то что выбрал пользак удобная штука (общий)
+  var modalState = {
+    height: 0,
+    width: 0,
+    type: "tree",
+    form: 0
+  }; // Делаем свой стейт, чтобы хранить, то что выбрал пользак удобная штука (общий)
 
+  var deadline = '2021-09-22';
   var intervalId = setInterval(function () {
     document.querySelector('.popup').style.display = "block";
     document.body.classList.add('modal-open');
@@ -17832,6 +17840,8 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div > div', 'after_click');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.balcon_icons', '.balcon_icons_img', '.big_img > img', 'do_image_more', 'inline-block');
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState); // Чтобы внутри модуля forms был стейт наш
+
+  Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', deadline);
 });
 
 /***/ }),
@@ -18030,18 +18040,50 @@ var forms = function forms(state) {
         }
       }
 
+      var clearState = function clearState() {
+        for (var _key in state) {
+          switch (_key) {
+            case 'height':
+              state.height = 0;
+
+            case 'width':
+              state.width = 0;
+
+            case 'type':
+              state.type = "tree";
+
+            case 'form':
+              state.form = 0;
+
+            case 'profile':
+              delete state.profile;
+          } // delete state[key];
+
+        }
+      };
+
+      var hideModal = function hideModal() {
+        var modalEnd = document.querySelector('.popup_calc_end');
+        modalEnd.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      };
+
       console.log(formData);
       console.log(JSON.stringify(formData));
       postData('assets/server.php', formData).then(function (res) {
         console.log(res);
+        console.log(state);
         statusMessage.textContent = message.success;
       }).catch(function () {
         return statusMessage.textContent = message.failure;
       }).finally(function () {
+        clearState();
         clearInputs();
         setTimeout(function () {
           statusMessage.remove();
-        }, 5000);
+          hideModal();
+        }, 2000);
+        console.log(state);
       });
     });
   }); // submitim formu
@@ -18079,21 +18121,71 @@ var modals = function modals(modalId, state) {
           e.preventDefault();
         }
 
-        console.dir(e.target);
-        windows.forEach(function (item) {
-          item.style.display = 'none';
+        console.dir(e.target.className);
+        windows.forEach(function (item1) {
+          item1.style.display = 'none';
         });
 
         switch (e.target.className) {
-          case 'POPUP_CALC_BTN':
-            console.log('Validation');
+          case 'button popup_calc_button':
+            console.log(state);
+            var windowWidth = document.querySelector('#width');
+            var windowHeight = document.querySelector('#height');
+
+            if (state.height == 0) {
+              windowHeight.style.cssText = "border: solid 1px red";
+              console.log(modal);
+              document.querySelector('.popup_calc').style.display = 'block';
+            }
+
+            if (state.width == 0) {
+              windowWidth.style.cssText = "border: solid 1px red";
+              console.log(modal);
+              document.querySelector('.popup_calc').style.display = 'block';
+            }
+
+            if (state.height != 0 && state.width != 0) {
+              modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
+
+              document.body.classList.add('modal-open');
+              windowHeight.style.cssText = "border: solid 1px green";
+              windowWidth.style.cssText = "border: solid 1px green";
+            }
+
             break;
-        }
 
-        console.log(windows);
-        modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
+          case 'button glazing_price_btn text-uppercase popup_calc_btn':
+            console.log(windows);
+            modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
 
-        document.body.classList.add('modal-open');
+            document.body.classList.add('modal-open');
+            break;
+
+          case 'button popup_calc_profile_button':
+            console.log(windows);
+            modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
+
+            document.body.classList.add('modal-open');
+            break;
+
+          case 'header_btn text-uppercase text-left popup_engineer_btn':
+            console.log(windows);
+            modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
+
+            document.body.classList.add('modal-open');
+            break;
+
+          case 'phone_link':
+            console.log(windows);
+            modal.style.display = "block"; // document.body.style.overflow = 'hidden'; 
+
+            document.body.classList.add('modal-open');
+            break;
+        } // console.log(windows);
+        // modal.style.display = "block";
+        // // document.body.style.overflow = 'hidden'; 
+        //     document.body.classList.add('modal-open');
+
       });
     }); // Можем листать только модалку
 
@@ -18186,6 +18278,77 @@ var tabs = function tabs(headerSelector, tabSelector, contentSelector, activeCla
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (tabs);
+
+/***/ }),
+
+/***/ "./src/js/modules/timer.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/timer.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var timer = function timer(id, deadline) {
+  var addZero = function addZero(num) {
+    if (num <= 9) {
+      return '0' + num;
+    } else {
+      return num;
+    }
+  };
+
+  var getTimeRemaning = function getTimeRemaning(endtime) {
+    // Дедлайн - текущее время
+    var t = Date.parse(endtime) - Date.parse(new Date()),
+        // Метод парс берет время и вычисляет его в милисекундах
+    seconds = Math.floor(t / 1000 % 60),
+        // Получим остаток 
+    minutes = Math.floor(t / 1000 / 60 % 60),
+        hours = Math.floor(t / 1000 / 60 / 60 % 24),
+        days = Math.floor(t / 1000 / 60 / 60 / 24);
+    return {
+      'total': t,
+      'days': days,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+    };
+  };
+
+  var setClock = function setClock(selector, endtime) {
+    var timer = document.querySelector(selector),
+        days = timer.querySelector('#days'),
+        hours = timer.querySelector('#hours'),
+        minutes = timer.querySelector('#minutes'),
+        seconds = timer.querySelector('#seconds'),
+        timeImterval = setInterval(updateClock, 1000); // Каждую секунду вызывает функцию апдейт
+
+    updateClock();
+
+    function updateClock() {
+      var t = getTimeRemaning(endtime); // Сколько осталось до дедлайна ?
+
+      days.textContent = addZero(t.days);
+      hours.textContent = addZero(t.hours);
+      minutes.textContent = addZero(t.minutes);
+      seconds.textContent = addZero(t.seconds);
+
+      if (t.total <= 0) {
+        days.textContent = "00";
+        hours.textContent = "00";
+        minutes.textContent = "00";
+        seconds.textContent = "00";
+        clearInterval(timeImterval);
+      }
+    }
+  };
+
+  setClock(id, deadline);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (timer);
 
 /***/ }),
 
