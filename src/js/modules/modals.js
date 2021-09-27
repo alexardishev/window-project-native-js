@@ -8,6 +8,7 @@ const modals = (modalId, state) => {
         const modal = document.querySelector(modalSelector);
         const close = document.querySelector(closeSelector);
         const windows = document.querySelectorAll('[data-modal]');
+        const scroll = calcScroll();
         trigger.forEach(item => {
             item.addEventListener('click', (e)=> {
                 if(e.target) {
@@ -44,6 +45,7 @@ const modals = (modalId, state) => {
                         modal.style.display = "block";
                         // document.body.style.overflow = 'hidden'; 
                             document.body.classList.add('modal-open');
+                            document.body.style.marginRight = `${scroll}px`;
                             windowHeight.style.cssText = `border: solid 1px green`;
                             windowWidth.style.cssText = `border: solid 1px green`;
                     }
@@ -54,24 +56,28 @@ const modals = (modalId, state) => {
                     modal.style.display = "block";
                     // document.body.style.overflow = 'hidden'; 
                         document.body.classList.add('modal-open');
+                        document.body.style.marginRight = `${scroll}px`;
                     break;
                 case 'button popup_calc_profile_button':
                     console.log(windows);
                     modal.style.display = "block";
                     // document.body.style.overflow = 'hidden'; 
                         document.body.classList.add('modal-open');
+                        document.body.style.marginRight = `${scroll}px`;
                     break;
                 case 'header_btn text-uppercase text-left popup_engineer_btn':
                     console.log(windows);
                     modal.style.display = "block";
                     // document.body.style.overflow = 'hidden'; 
                         document.body.classList.add('modal-open');
+                        document.body.style.marginRight = `${scroll}px`;
                     break;
                 case 'phone_link':
                     console.log(windows);
                     modal.style.display = "block";
                     // document.body.style.overflow = 'hidden'; 
                         document.body.classList.add('modal-open');
+                        document.body.style.marginRight = `${scroll}px`;
                     break;
             }
             
@@ -92,6 +98,7 @@ const modals = (modalId, state) => {
             modal.style.display = "none";
             // document.body.style.overflow = '';
             document.body.classList.remove('modal-open');
+            document.body.style.marginRight = `0px`;
 
         });
 
@@ -104,6 +111,7 @@ const modals = (modalId, state) => {
                 modal.style.display = "none";
                 // document.body.style.overflow = '';
                 document.body.classList.remove('modal-open');
+                document.body.style.marginRight = `0px`;
 
             }
         });
@@ -111,6 +119,21 @@ const modals = (modalId, state) => {
 
     }
 
+    function calcScroll() {
+        let div = document.createElement('div');
+        div.style.width = '50px';
+        div.style.height = '50px';
+        div.style.overflowY = 'scroll';
+        div.style.visibility = 'hidden';
+
+
+        document.body.appendChild(div);
+
+        let scrollWidth = div.offsetWidth - div.clientWidth; // Первое это полная ширина, а второе это паддинге и сам контент
+        div.remove();
+
+        return scrollWidth;
+    }
 
 
 
